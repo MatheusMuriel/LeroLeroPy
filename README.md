@@ -8,6 +8,8 @@ Baseado no fabuloso [gerador de lero-lero](http://lerolero.bgnweb.com.br/) vers�
 
 Lembre-se: aparência é tudo, conteúdo é nada.
 
+![Screenshot](https://i.imgur.com/48Zvekn.png)
+
 #### Funções novas: 
 - Gerar uma quantidade _n_ arquivos lerolero.txt 
 	- De tamanho fixo ou seguindo uma taxa de crescimento _len * x_
