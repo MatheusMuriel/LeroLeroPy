@@ -1,4 +1,7 @@
 import random
+import sys
+import re
+
 tab0 = [
   'Caros amigos, ',
   'Por outro lado, ',
@@ -134,27 +137,86 @@ def geraFrase():
     p2 = tab2[ random.randint(0,len(tab2)-1) ]
     p3 = tab3[ random.randint(0,len(tab3)-1) ]
 
-    return str(p0 + p1 + p2 + p3)
+    return str(p0 + p1 + p2 + p3 + " ")
 
-def geraArquivo(numeroArquivo, quantFrases):
-    n = str (numeroArquivo)
-    arquivo = open("tamanho" + n + ".txt", 'w')
-    
-    for _ in range(0,quantFrases):
-        arquivo.write(geraFrase())
-    
-    arquivo.close()
-    pass
+def geraArquivo(nomeArquivo, isFrase, tamanho):
+	saida = ""
+
+	if isFrase:
+		for _ in range(0,tamanho):
+			saida = saida + geraFrase()
+
+	else:
+		quantCaracteres = 0
+		while (quantCaracteres < tamanho):					
+			frase = geraFrase()
+			quantCaracteres = quantCaracteres + len(frase)
+			saida = saida + geraFrase()
+		
+		#Corta a string de acordo com o limite de caracteres.
+		saida = saida[0:tamanho]
+
+	arquivo = open(nomeArquivo, 'w')
+	arquivo.write(saida)
+	arquivo.close()
+
+"""
+modulo = Texto, Arquivo
+tamanho = Tamanho do lerolero
+isFrase = Se o tamanho é limitado pelas frases(frase) ou caracteres(caracter)
+quantGe = Quantidade de geracoes.
+taxaCre = Taxa de crescimento.
+nomeArq = Nome padrão arquivo.
+"""
+def uc_arquivo(**kwargs):
+	
+	quantArquivos = kwargs.get('quantGe')
+	taxaCrescimento = kwargs.get('taxaCre')
+	tamanho = kwargs.get('tamanho')
+	isFrase = kwargs.get('isFrase')
+	nomeBase = kwargs.get('nomeArq')
+
+	print(quantArquivos," arquivo(s) começando no tamanho ", tamanho, " e crescendo em uma taxa de vezes ", taxaCrescimento, " contando por ", ("frase" if isFrase else "caracter"), " e com nome ", nomeBase, "X.txt")
+	c = tamanho
+	for i in range(1, quantArquivos+1):
+		
+		nome_atual = str( nomeBase + str(i) + ".txt" )
+		
+		geraArquivo(nome_atual, isFrase, c)
+    	
+		c = c * taxaCrescimento
+
+def uc_texto(tamanho):
+	saida = ""
+	for i in range(0, tamanho):
+		saida = saida + geraFrase()
+	print(saida)
 
 def main():
-    quantArquivos = 10;
-    taxaCrescimento = 2;
-    c = 50;
-    for i in range(0, quantArquivos):
-        geraArquivo(i,c)
-        c = c * taxaCrescimento
-    pass    
+	if len(sys.argv) > 2:
+		#Gera arquivo
+		try:
+			arg1,arg2,arg3,arg4,arg5 = sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4],sys.argv[5]
+			uc_arquivo(
+				tamanho=int(arg1), 
+				isFrase=False if (str(arg2).lower() == "caracter") else True,
+				quantGe=int(arg3),
+				taxaCre=int(arg4),
+				nomeArq=arg5
+				)
+		except:
+			print("Argumentos invalidos para geração do arquivo. Use a sintaxe: ")
+			print("python lerolero.py [tamanho] [caracter/frases] [quantidadeArquivos] [taxaCrescimento] [nomearquivo]")
+  	
+	else:
+		#Tamanho padrao
+		tamanho = 2
+
+		if len(sys.argv) == 2:
+			tamanho = int(sys.argv[1])
+		
+		#printa texto
+		uc_texto(tamanho)
 
 if __name__ == "__main__":
     main()
-
